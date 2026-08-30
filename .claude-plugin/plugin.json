@@ -1,0 +1,9 @@
+{
+  "name": "qq-history-recovery",
+  "version": "0.1.0",
+  "description": "Recover a person's own QQ chat history across all three Tencent stores: the mobile classic QQ database (plain SQLite, repeating-XOR field cipher), the desktop Msg3.0.db and message-manager .bak exports (the MSG0 modified-SQLite format), plus a Frida-based import monitor that instruments a desktop-to-phone migration. Documents the full reverse-engineering journey and every environment trick. Chat history is private data and never enters the repo; only synthetic fixtures ship.",
+  "author": { "name": "DaizeDong" },
+  "homepage": "https://github.com/DaizeDong/qq-history-recovery",
+  "license": "MIT",
+  "keywords": ["qq","mobileqq","tim","tencent","chat-export","chat-history","frida","reverse-engineering","msg3.0","data-export"]
+}

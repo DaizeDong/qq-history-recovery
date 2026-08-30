@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+Thumbs.db
+*.swp
+*.log
+scratch/
+*.local.*
+secrets/
+.env
+*.key
+*.pem
+# NEVER commit real QQ data: pulled dbs, desktop store copies, decoded output, .bak
+qq_db_pull/
+qq_export/
+qq_json/
+qq_msg3_work/
+*.db
+*.db-shm
+*.db-wal
+*.bak
+!.dataclass.json
+!.claude-plugin/plugin.json

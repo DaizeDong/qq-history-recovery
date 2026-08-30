@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "Skill Repo Spec v1 s9. TOOL=code/docs (public). FIXTURE=synthetic test data from tools/make_fixtures.py. DATA=real-run output, never git-tracked, lives in a private companion config.",
+    "Enforced by tools/data_boundary.py in .githooks and CI."
+  ],
+  "_audited": "2026-08-30 FIRST AUDIT. The real-run output here is a person's entire QQ chat history: pulled mobile dbs, desktop Msg3.0.db copies, decoded JSON, and .bak exports. Every landing path is declared and sealed so a real run cannot deposit history at a repo-relative path even with git add -f. The Frida monitor logs are also real-run output and are sealed.",
+  "data": [
+    "qq_db_pull/",
+    "qq_msg3_work/",
+    "nt_msg_work/",
+    "qq_export/",
+    "qq_json/",
+    "monitor_logs/"
+  ],
+  "data_sealed": [],
+  "fixture": [],
+  "_data_home": "~/.qq-history-recovery-config/data/   (override with $QQ_HISTORY_RECOVERY_DATA_DIR). Real-run output goes THERE, never back into this repo."
+}
