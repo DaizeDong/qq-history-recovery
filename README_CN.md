@@ -27,6 +27,16 @@ python tools/qqnt_decode.py  --db nt_msg_plain.db --out ~/qq-out/qq.jsonl
 
 `qqnt_decrypt.py` 处理本仓用证据锁定的格式:1024 字节自定义头,之后是标准 SQLCipher 4 流,盐是偏移 1024 处的 16 字节,参数为 kdf_iter 4000、PBKDF2 HMAC SHA512、页 4096、AES-256-CBC、页 HMAC SHA1。它逐页流式解、校验每一页的 HMAC,绝不写出坏库。`qqnt_decode.py` 读解密后的库,从 protobuf 内容列里取出每条消息的文本,判断谁发的,每条文本消息写一条 JSON。它只往仓外写,因为产物是数据。
 
+## 给消息配上名字
+
+解码出来的消息只用一个形如 `u_SyntheticUid0000000000` 的 QQNT uid 标识对方,人根本读不出那是谁。名字在同一个 `nt_qq\nt_db\` 目录下的兄弟文件 `profile_info.db` 里,格式同样是那层 SQLCipher 包装、密钥也是同一个,所以同一个解密器就能打开。
+
+```
+python tools/qqnt_contacts.py --db profile_info.db --key "<16字符密钥>" --out ~/qq-out/contacts.json
+```
+
+它写出一份 uid 到名字的纯 JSON 映射:有备注就用机主给这个联系人起的备注,没有就用对方昵称,两者都没有就原样保留 uid,因为解不出来好过安错名字。加 `--friends-only` 只保留已通过的好友。解密出来的临时明文库在提取完就删除,除非加 `--keep-plain`;密钥从命令行或 `$QQNT_KEY` 读取、绝不写进任何文件;映射本身是真实身份数据,和这里其他产物一样只往仓外写。
+
 ## 手机端流程
 
 手机端用 `tools/qq_pull.py` 经 adb 拉库,`tools/qq_keyfind.py` 用 frida 16 从运行中的客户端引导出重复 XOR 密钥,`tools/qq_decode.py` 离线解码。让密钥看起来解不出、其实能解的那个「周期陷阱」见 `docs/JOURNEY.md`。
