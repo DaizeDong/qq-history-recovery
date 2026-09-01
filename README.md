@@ -45,6 +45,16 @@ every page's HMAC, and refuses to write a corrupt database. `qqnt_decode.py` rea
 database, pulls each message's text out of the protobuf content column, decides who sent it, and writes
 one JSON record per text message. It writes only outside this repository, since the output is data.
 
+## Putting names on the messages
+
+A decoded message identifies the other party only by a QQNT uid like `u_SyntheticUid0000000000`, which no human can read. The names live in `profile_info.db`, the sibling file in the same `nt_qq\nt_db\` directory, in the same wrapped SQLCipher format under the same key, so the same decryptor opens it.
+
+```
+python tools/qqnt_contacts.py --db profile_info.db --key "<16 char key>" --out ~/qq-out/contacts.json
+```
+
+That writes a plain JSON mapping of uid to name, taking the owner's private remark for a contact when there is one, the contact's nickname otherwise, and leaving the raw uid in place when there is neither, since an unresolved id is better than a wrong name. Add `--friends-only` to keep just the accepted friends. The decrypted copy of the profile database is deleted after extraction unless you pass `--keep-plain`, the key is read from the command line or `$QQNT_KEY` and never written to a file, and the mapping is real identity data so it is written outside this repository like every other output here.
+
 ## The mobile pipeline
 
 For the mobile store, `tools/qq_pull.py` pulls the database over adb, `tools/qq_keyfind.py` bootstraps
