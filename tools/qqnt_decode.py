@@ -95,11 +95,25 @@ def owner_uid(cur):
     return counts.most_common(1)[0][0]
 
 
+#: Rows skipped because no UTF-8 text could be decoded (stickers, images, voice,
+#: system notices, calls). Counted per (table, is_me) so the caller can report it.
+#:
+#: 2026-09-14: these rows used to be dropped with a bare `continue` and **no count at
+#: all**. That silence is not cosmetic. The downstream T table estimates "how often does
+#: he leave a message unanswered" from gaps between his TEXT messages, so every sticker
+#: or voice reply he sent is recorded as silence. An uncounted drop makes that bias
+#: unmeasurable: "he ignored it" and "he answered with a sticker" become the same
+#: observation, and nothing anywhere reports how often the second one happened.
+SKIPPED = Counter()
+
+
 def _rows(cur, table, ctx, owner):
     q = ('SELECT "40800", "40020", "40030", "40050" FROM %s WHERE "40800" IS NOT NULL' % table)
     for blob, sender, conv, ts in cur.execute(q):
         text = message_text(bytes(blob))
         if not text:
+            mine = bytes(sender) == owner if sender is not None else False
+            SKIPPED[(table, "mine" if mine else "theirs")] += 1
             continue
         is_me = bytes(sender) == owner if sender is not None else False
         yield {
@@ -146,6 +160,14 @@ def main():
                 me += 1 if rec["is_me"] else 0
     db.close()
     print("extracted %d text messages (%d yours, %d others) -> %s" % (n, me, n - me, a.out))
+    if SKIPPED:
+        sk_mine = sum(v for (_t, who), v in SKIPPED.items() if who == "mine")
+        sk_all = sum(SKIPPED.values())
+        denom_mine = me + sk_mine
+        print("skipped %d non-text rows (%d of them his own; %.1f%% of all his messages "
+              "carried no decodable text -- stickers/images/voice/system)"
+              % (sk_all, sk_mine, 100.0 * sk_mine / denom_mine if denom_mine else 0.0))
+        print("  NOTE: downstream treats these as silence. See the SKIPPED docstring.")
     return 0
 
 
