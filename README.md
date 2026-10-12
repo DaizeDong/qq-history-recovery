@@ -78,5 +78,5 @@ decode and parse steps with QQ closed, on a copy of the database, never on the o
 ## Data boundary
 
 Pulled databases, decrypted stores, and decoded output are all real run output. They are declared in
-`.dataclass.json` and never committed. Tests run against synthetic protobuf messages and a synthetic
+`.dataclass.json` and versioned only in the PRIVATE companion. Tests run against synthetic protobuf messages and a synthetic
 mobile database built by the generators in `tools/`, so nothing real is needed to exercise the code.
