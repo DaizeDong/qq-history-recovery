@@ -55,7 +55,11 @@ def main():
     a = ap.parse_args()
 
     repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    if os.path.abspath(a.out).startswith(repo):
+    # Compare path components, not string prefixes: the sibling companion
+    # qq-history-recovery-config starts with this repo's path and is not inside it.
+    _out = os.path.normcase(os.path.realpath(a.out))
+    _repo = os.path.normcase(os.path.realpath(repo))
+    if _out == _repo or _out.startswith(_repo.rstrip("\/") + os.sep):
         sys.stderr.write("ERROR: refusing to write a decrypted database inside the repo. It is DATA.\n")
         return 2
 
