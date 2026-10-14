@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "tool": "qq-history-recovery",
+  "layout": "private_sibling_companion",
+  "default_root": "../qq-history-recovery-config",
+  "path_selection": "QQ_HISTORY_RECOVERY_CONFIG then _CONFIG_DIR then sibling",
+  "protected_paths": [
+    "*.txt",
+    "*.session*",
+    "*.json",
+    "data/**",
+    "emu/**"
+  ],
+  "artifact_rules": [
+    {
+      "path": "**",
+      "schema": "Existing tool key/session/recovery format; preserved without record conversion",
+      "purpose": "Operator credentials, recovered outputs and necessary history",
+      "retention": "Preserve original recovery material and keys; no automatic deletion or queue replay",
+      "restore": "Restore the private companion to a separate directory; never overwrite original databases"
+    }
+  ],
+  "guard_revision": "cd5aedba5d2d3504799ac2d6cddf61c42b4faf12",
+  "path_validation": "Canonical absolute paths; shared datadir default; PUBLIC or UNKNOWN credential destinations refused before writes"
+}
