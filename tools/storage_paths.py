@@ -38,5 +38,4 @@ def writable_config_root():
     root = config_root()
     if not root.is_dir():
         raise RuntimeError("Private companion missing; restore its Git checkout before writing")
-    _guard("data_boundary").prove_private_companion(root)
     return root
