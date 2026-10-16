@@ -24,7 +24,7 @@ person's messages is worse than showing no name at all, so this tool never infer
 but those two columns.
 
 The mapping is real identity data. It is DATA under .dataclass.json, so it is written outside this
-repository, by default under the private companion directory that tools/datadir.py resolves. The key
+repository, by default under the private companion directory that the fleet_guards resolver selects. The key
 comes from the command line or $QQNT_KEY and is never written to any file. The decrypted plaintext
 copy of profile_info.db is deleted after extraction unless you pass --keep-plain.
 
@@ -38,12 +38,10 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-# datadir moved into the guards submodule: one copy for the fleet instead of one per repo,
-# which had already begun to drift. The insert above stays, because sibling modules in this
-# same tools/ directory are still imported by bare name.
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                "guards", "tools"))
-import datadir
+try:
+    from fleet_guards.runtime import companion_resolver
+except ImportError as exc:
+    raise ImportError('fleet_guards is not installed; run: pip install -e "$(git config --get fleet.guards)"') from exc
 
 SKILL = "qq-history-recovery"
 TABLE = "profile_info_v6"
@@ -165,8 +163,8 @@ def main():
             return 2
     else:
         try:
-            out = str(datadir.data_path(SKILL, "contacts.json"))
-        except datadir.DataDirNotInitialized as e:
+            out = str(companion_resolver(source_root=repo).data_path(SKILL, "contacts.json"))
+        except RuntimeError as e:
             sys.stderr.write("ERROR: %s\n" % e)
             return 2
 

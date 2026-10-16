@@ -14,7 +14,7 @@ Keep keys, sessions, restored message evidence and the source schema together in
 private version history. Rebuildable caches and failed temporary outputs may be
 reviewed separately. `storage.contract.json` lists this preservation scope.
 
-Path selection reuses the pinned guards datadir convention. Credential writers require the companion
+Path selection uses the installed fleet-guards resolver (`fleet_guards.runtime.companion_resolver`). Credential writers require the companion
 checkout to exist before creating directories, sessions or key files; there is no runtime
 visibility proof, the commit-time gates own that. Missing companions can be inspected by readers
 but writes require restoring the private Git checkout. Explicit

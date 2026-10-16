@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Removed the guards and style submodules, the gate workflows (pii-guard, dash-guard) and fleet-sync. `.githooks` forwards to the local fleet-guards and fleet-style checkouts named by `git config fleet.guards` and `fleet.style` and blocks when either is unset or missing; commits also run the dash check on added lines. `tools/storage_paths.py` and `tools/qqnt_contacts.py` resolve the companion through the installed `fleet_guards.runtime.companion_resolver` (`pip install -e "$(git config --get fleet.guards)"`).
 - Contact resolution: `tools/qqnt_contacts.py` decrypts the sibling `profile_info.db` with the existing QQNT decryptor and writes a uid to name mapping, so decoded messages can be labeled with a person instead of an opaque `u_` id. Resolution order is the owner's remark, then the nickname, then the raw uid, which is kept as is rather than guessed at. `--friends-only` restricts it to `buddy_list`. The mapping is DATA and is written outside the repo.
 
 ## 0.1.0 (2026-08-30)
