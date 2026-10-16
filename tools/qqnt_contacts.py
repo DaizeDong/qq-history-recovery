@@ -37,7 +37,6 @@ import sqlite3
 import subprocess
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
     from fleet_guards.runtime import companion_resolver
 except ImportError as exc:
@@ -156,17 +155,21 @@ def main():
     a = ap.parse_args()
 
     repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    if a.out:
-        out = os.path.abspath(a.out)
-        if out.startswith(repo):
-            sys.stderr.write("ERROR: refusing to write a contact mapping inside the repo. It is DATA.\n")
-            return 2
-    else:
-        try:
-            out = str(companion_resolver(source_root=repo).data_path(SKILL, "contacts.json"))
-        except RuntimeError as e:
-            sys.stderr.write("ERROR: %s\n" % e)
-            return 2
+    try:
+        resolver = companion_resolver(source_root=repo)
+        if a.out:
+            out = os.path.abspath(a.out)
+            resolver.assert_outside_own_repo(out, SKILL)
+        else:
+            base = resolver.resolve_data_dir(SKILL)
+            if base is None:
+                sys.stderr.write("ERROR: initialize the PRIVATE qq-history-recovery-config companion "
+                                 "or set QQ_HISTORY_RECOVERY_CONFIG\n")
+                return 2
+            out = os.path.join(str(base), "contacts.json")
+    except (RuntimeError, ValueError) as e:
+        sys.stderr.write("ERROR: %s\n" % e)
+        return 2
 
     plain = _is_plaintext(a.db)
     key = a.key or os.environ.get("QQNT_KEY", "")

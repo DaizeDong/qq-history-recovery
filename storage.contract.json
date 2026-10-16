@@ -21,5 +21,5 @@
     }
   ],
   "guard_revision": "cd5aedba5d2d3504799ac2d6cddf61c42b4faf12",
-  "path_validation": "Canonical absolute paths; shared datadir default; PUBLIC or UNKNOWN credential destinations refused before writes"
+  "path_validation": "Canonical absolute paths; fleet_guards.runtime companion resolver; destinations inside this source tree refused; PRIVATE publication enforced by the commit-time .githooks, not at write time"
 }
