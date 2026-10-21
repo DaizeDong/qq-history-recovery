@@ -3,7 +3,7 @@
   "tool": "qq-history-recovery",
   "layout": "private_sibling_companion",
   "default_root": "../qq-history-recovery-config",
-  "path_selection": "QQ_HISTORY_RECOVERY_CONFIG then _CONFIG_DIR then sibling",
+  "path_selection": "QQ_HISTORY_RECOVERY_DATA_DIR then QQ_HISTORY_RECOVERY_CONFIG then sibling",
   "protected_paths": [
     "*.txt",
     "*.session*",
